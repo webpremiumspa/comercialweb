@@ -30,6 +30,7 @@
                     data: data,
                     store_id : support_btn.data( 'store_id' ),
                     order_id : support_btn.data( 'order_id' ),
+					product_id : support_btn.data( 'product_id' ),
                 };
                 $.post( dokan.ajaxurl, s_data, function ( resp ) {
                     if ( resp.success == true ) {

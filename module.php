@@ -6,9 +6,9 @@ use WP_Query;
 
 class Module {
     private $post_type = 'dokan_store_support';
-
+    private  $id_producto =54;
     private $per_page = 15;
-
+    
     /**
      * Constructor for the Dokan_Store_Support class
      *
@@ -21,6 +21,8 @@ class Module {
      * @uses add_action()
      */
     public function __construct() {
+		
+		
         define( 'DOKAN_STORE_SUPPORT_PLUGIN_VERSION', '1.3.6' );
         define( 'DOKAN_STORE_SUPPORT_DIR', __DIR__ );
         define( 'DOKAN_STORE_SUPPORT_INC_DIR', DOKAN_STORE_SUPPORT_DIR . '/includes' );
@@ -359,13 +361,17 @@ class Module {
      * @since 3.2.0
      */
     public function generate_support_button_product_page() {
+	
+		
         $store_support_show = dokan_get_option( 'store_support_product_page', 'dokan_store_support_setting', 'above_tab' );
 
         if ( 'above_tab' !== $store_support_show ) {
             return;
         }
-
+echo 'id del producto antes'.$this->id_producto;
         $product_id = get_the_ID();
+		$this->id_producto=$product_id;
+		echo 'id del producto despues'.$this->id_producto;
         $store_id   = get_post_field( 'post_author', $product_id );
         $store_info = dokan_get_store_info( $store_id );
 
@@ -379,7 +385,7 @@ class Module {
             return;
         }
         ?>
-            <button data-store_id="<?php echo esc_attr( $store_id ); ?>" class="dokan-store-support-btn-product dokan-store-support-btn button alt <?php echo esc_attr( $button['class'] ); ?>"><?php echo esc_html( $button['text'] ); ?></button>
+            <button data-store_id="<?php echo esc_attr( $store_id ); ?>" data-product_id="<?php echo esc_attr( $product_id ); ?>" class="dokan-store-support-btn-product dokan-store-support-btn button alt <?php echo esc_attr( $button['class'] ); ?>"><?php echo esc_html( $button['text'] ); ?></button>
         <?php
     }
 
@@ -542,6 +548,7 @@ class Module {
         global $user_login;
 
         $seller_id = $seller_id === '' ? ( ( isset( $_POST['store_id'] ) ) ? absint( wp_unslash( $_POST['store_id'] ) ) : 0 ) : absint( $seller_id );
+		 $product_id = $_POST['product_id'];
         $order_id  = isset( $_POST['order_id'] ) ? absint( wp_unslash( $_POST['order_id'] ) ) : 0;
 
         $customer_orders = apply_filters( 'dokan_store_support_order_id_select_in_form', dokan_get_customer_orders_by_seller( dokan_get_current_user_id(), $seller_id ) );
@@ -573,6 +580,7 @@ class Module {
                 <textarea required class="dokan-form-control" name='dokan-support-msg' rows="5" id='dokan-support-msg'></textarea>
             </div>
             <input type="hidden" name='store_id' value="<?php echo $seller_id; ?>" />
+			 <input type="hidden" name='product_id' value="<?php echo $product_id; ?>" />
 
             <?php wp_nonce_field( 'dokan-support-form-action', 'dokan-support-form-nonce' ); ?>
             <div class="dokan-form-group">
@@ -627,9 +635,12 @@ class Module {
      *
      * @since 1.0
      *
+	 
      * @return string success | failed
      */
     public function support_msg_submit( $postdata = [] ) {
+		
+		
         if ( empty( $postdata ) ) {
             parse_str( wp_unslash( $_POST['form_data'] ), $postdata );
 
@@ -637,6 +648,8 @@ class Module {
                 wp_send_json_error( __( 'Are you cheating?', 'dokan' ) );
             }
         }
+		
+
 
         $my_post = [
             'post_title'     => sanitize_text_field( $postdata['dokan-support-subject'] ),
@@ -652,9 +665,11 @@ class Module {
         if ( $post_id ) {
             $store_id = ( ! empty( $postdata['store_id'] ) ) ? absint( $postdata['store_id'] ) : null;
             $order_id = ( ! empty( $postdata['order_id'] ) ) ? absint( $postdata['order_id'] ) : null;
-
+		$product_id = ( ! empty( $postdata['product_id'] ) ) ? absint( $postdata['product_id'] ) : null;
+		
             update_post_meta( $post_id, 'store_id', $store_id );
             update_post_meta( $post_id, 'order_id', $order_id );
+			update_post_meta( $post_id, 'product_id', $product_id );
 
             $mailer = WC()->mailer();
 
