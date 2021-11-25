@@ -10,7 +10,7 @@ class Module {
     private $per_page = 15;
 
     /**
-     * Constructor for the Dokan_Store_Support class
+     * Constructor for the Dokan_Store_Support class 22
      *
      * Sets up all the appropriate hooks and actions
      * within our plugin.
