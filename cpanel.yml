@@ -1,0 +1,6 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/bekuexpr/deploytest/
+    - module.php $DEPLOYPATH
+    - script.js $DEPLOYPATH
