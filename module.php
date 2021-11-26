@@ -971,7 +971,7 @@ class Module {
                     <tr>
                         
                         
-                        <th><?php esc_html_e( 'Consulta', 'dokan' ); ?></th>
+                        <th style="width: 80%;"><?php esc_html_e( 'Consulta', 'dokan' ); ?></th>
                         
                         <th style="width: 20%;"><?php esc_html_e( 'Date', 'dokan' ); ?></th>
                         
@@ -990,8 +990,7 @@ class Module {
                             </td>
                             
                           
-                            <td data-title="<?php esc_attr_e( 'Status', 'dokan' ); ?>"><span class="dokan-label <?php echo $topic_status; ?>"><?php echo 'open' === $topic->post_status ? __( 'Open', 'dokan' ) : __( 'Close', 'dokan' ); ?></span></td>
-                            <td class="dokan-order-date" data-title="<?php esc_attr_e( 'Date', 'dokan' ); ?>"><span><?php echo esc_html( dokan_format_datetime( dokan_get_timestamp( $topic->post_date_gmt, true ) ) ); ?></span></td>
+                              <td class="dokan-order-date" data-title="<?php esc_attr_e( 'Date', 'dokan' ); ?>"><span><?php echo esc_html( dokan_format_datetime( dokan_get_timestamp( $topic->post_date_gmt, true ) ) ); ?></span></td>
                           
                         </tr>
                         <tr>
