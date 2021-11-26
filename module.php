@@ -969,12 +969,12 @@ class Module {
             <table class="dokan-table dokan-support-table">
                 <thead>
                     <tr>
-                        <th><?php esc_html_e( 'Topic', 'dokan' ); ?></th>
+                        
                         <th><?php esc_html_e( 'Title', 'dokan' ); ?></th>
-                        <th><?php esc_html_e( 'Customer', 'dokan' ); ?></th>
+                        <th><?php esc_html_e( 'Consulta', 'dokan' ); ?></th>
                         <th><?php esc_html_e( 'Status', 'dokan' ); ?></th>
                         <th><?php esc_html_e( 'Date', 'dokan' ); ?></th>
-                        <th><?php esc_html_e( 'Action', 'dokan' ); ?></th>
+                        
                     </tr>
                 </thead>
                 <tbody>
@@ -983,26 +983,22 @@ class Module {
                         $topic_url = trailingslashit( dokan_get_navigation_url( 'support' ) . '' . $topic->ID );
                         ?>
                         <tr>
-                            <td>
-                                <a href="<?php echo $topic_url; ?>"
-                                    <strong>
-                                        <?php echo '#' . $topic->ID; ?>
-                                    </strong>
-                                </a>
-                            </td>
+                            
                             <td class="column-primary">
-                                <a href="<?php echo $topic_url; ?>">
+                                
                                     <?php echo $topic->post_title; ?>
-                                </a>
+                                
 
-                                <button type="button" class="toggle-row"></button>
+                                
                             </td>
-                            <td data-title="<?php esc_html_e( 'Customer', 'dokan' ); ?>">
-                                <div class="dokan-support-customer-name">
-                                    <?php echo get_avatar( $topic->post_author, 50 ); ?>
-                                    <strong><?php echo get_user_meta( $topic->post_author, 'nickname', true ); ?></strong>
-                                </div>
+                              <td class="column-primary">
+                                
+                                    <?php echo $topic->post_content; ?>
+                                
+
+                                
                             </td>
+                            
                             <?php
                             switch ( $topic->post_status ) {
                                 case 'open':
@@ -1029,9 +1025,7 @@ class Module {
                             ?>
                             <td data-title="<?php esc_attr_e( 'Status', 'dokan' ); ?>"><span class="dokan-label <?php echo $topic_status; ?>"><?php echo 'open' === $topic->post_status ? __( 'Open', 'dokan' ) : __( 'Close', 'dokan' ); ?></span></td>
                             <td class="dokan-order-date" data-title="<?php esc_attr_e( 'Date', 'dokan' ); ?>"><span><?php echo esc_html( dokan_format_datetime( dokan_get_timestamp( $topic->post_date_gmt, true ) ) ); ?></span></td>
-                            <td data-title="<?php esc_attr_e( 'Action', 'dokan' ); ?>">
-                                <a class="dokan-btn dokan-btn-default dokan-btn-sm tips dokan-support-status-change" onclick="dokan_show_delete_prompt( event, dokan.delete_confirm );" href="<?php echo wp_nonce_url( add_query_arg( [ 'action' => 'dokan-support-topic-status', 'topic_id' => $topic->ID, 'ticket_status' => $c_status ], dokan_get_navigation_url( 'support' ) ), 'dokan-change-topic-status' ); ?>" title="" data-changing_post_id="<?php echo $topic->ID; ?>" data-original-title="<?php echo $btn_title; ?>"><i data-url="<?php echo wp_nonce_url( add_query_arg( [ 'action' => 'dokan-support-topic-status', 'topic_id' => $topic->ID, 'ticket_status' => $c_status ], dokan_get_navigation_url( 'support' ) ), 'dokan-change-topic-status' ); ?>" class="fa <?php echo $btn_icon; ?>">&nbsp;</i></a>
-                            </td>
+                          
                         </tr>
                         <?php
                     }
