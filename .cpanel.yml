@@ -2,5 +2,5 @@
 deployment:
   tasks:
     - export DEPLOYPATH=/home/bekuexpr/deploytest/
-    - module.php $DEPLOYPATH
-    - script.js $DEPLOYPATH
+    - /bin/cp module.php $DEPLOYPATH
+    - /bin/cp script.js $DEPLOYPATH
