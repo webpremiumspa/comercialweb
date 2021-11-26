@@ -3,8 +3,5 @@ deployment:
   tasks:
     - export DEPLOYPATH=/home/bekuexpr/public_html/comercialweb.cl/wp-content/plugins/dokan/modules/store-support/
     - /bin/cp module.php $DEPLOYPATH
----
-deployment:
-  tasks:
-    - export DEPLOYPATH=/home/bekuexpr/public_html/comercialweb.cl/wp-content/plugins/dokan/modules/store-support/assets/js
+    - export DEPLOYPATH=/home/bekuexpr/public_html/comercialweb.cl/wp-content/plugins/dokan/modules/store-support/assets/js/
     - /bin/cp script.js $DEPLOYPATH
