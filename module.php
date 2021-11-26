@@ -972,8 +972,8 @@ class Module {
                         
                         
                         <th><?php esc_html_e( 'Consulta', 'dokan' ); ?></th>
-                        <th><?php esc_html_e( 'Status', 'dokan' ); ?></th>
-                        <th><?php esc_html_e( 'Date', 'dokan' ); ?></th>
+                        
+                        <th style="width: 20%;"><?php esc_html_e( 'Date', 'dokan' ); ?></th>
                         
                     </tr>
                 </thead>
@@ -985,44 +985,17 @@ class Module {
                         <tr>
                             
                             
-                              <td class="column-primary">
-                                
+                              <td class="column-primary">                             
                                     <?php echo $topic->post_content; ?>
-                                
-
-                                
                             </td>
                             
-                            <?php
-                            switch ( $topic->post_status ) {
-                                case 'open':
-                                    $c_status     = __( 'closed', 'dokan' );
-                                    $btn_icon     = 'fa-close';
-                                    $topic_status = 'dokan-label-success';
-                                    $btn_title    = __( 'close topic', 'dokan' );
-                                    break;
-
-                                case 'closed':
-                                    $c_status     = __( 'open', 'dokan' );
-                                    $btn_icon     = 'fa-file-o';
-                                    $topic_status = 'dokan-label-danger';
-                                    $btn_title    = __( 're-open topic', 'dokan' );
-                                    break;
-
-                                default:
-                                    $c_status     = __( 'closed', 'dokan' );
-                                    $btn_icon     = 'fa-close';
-                                    $topic_status = 'dokan-label-success';
-                                    $btn_title    = __( 'close topic', 'dokan' );
-                                    break;
-                            }
-                            ?>
+                          
                             <td data-title="<?php esc_attr_e( 'Status', 'dokan' ); ?>"><span class="dokan-label <?php echo $topic_status; ?>"><?php echo 'open' === $topic->post_status ? __( 'Open', 'dokan' ) : __( 'Close', 'dokan' ); ?></span></td>
                             <td class="dokan-order-date" data-title="<?php esc_attr_e( 'Date', 'dokan' ); ?>"><span><?php echo esc_html( dokan_format_datetime( dokan_get_timestamp( $topic->post_date_gmt, true ) ) ); ?></span></td>
                           
                         </tr>
                         <tr>
-                         <td colspan="3"> <?php
+                         <td colspan="2"> <?php
                  
                     $comments = get_comments(
                         [
@@ -1034,9 +1007,9 @@ class Module {
                     // Display the list of comments
                     wp_list_comments(
                         [
-                            'max_depth'         => 0,
+                            'max_depth'         => 1,
                             'page'              => 1,
-                            'per_page'          => 100, //Allow comment pagination
+                            'per_page'          => 0, //Allow comment pagination
                             'reverse_top_level' => true, //Show the latest comments at the top of the list
                             'format'            => 'html5',
                             'callback'          => [ $this, 'support_comment_format_opiniones_producto' ],
