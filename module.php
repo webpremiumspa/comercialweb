@@ -1664,9 +1664,9 @@ class Module {
 
         <li <?php comment_class(); ?> id="li-comment-<?php comment_ID(); ?>">
 
-            <div class="dokan-suppport-topic-body">
-               <svg class="ui-pdp-icon ui-pdp-qadb__questions-list__question__answer-container__icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12"><path fill="#000" fill-opacity=".25" fill-rule="evenodd" d="M0 0h1v11h11v1H0z"></path></svg>
-                <div class="dokan-support-reply dokan-w8">
+            <div class="div-respuestas">
+               <svg class="icon-respuestas" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12"><path fill="#000" fill-opacity=".25" fill-rule="evenodd" d="M0 0h1v11h11v1H0z"></path></svg>
+                <div>
                     <p><?php comment_text(); ?></p>
                 </div>
                 <div class="dokan-clearfix"></div>
