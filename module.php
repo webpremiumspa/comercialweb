@@ -566,7 +566,7 @@ class Module {
         <form class="dokan-form-container" id="dokan-support-form">
             <div class="dokan-form-group">
                 <label class="dokan-form-label" for="dokan-support-subject"><?php esc_html_e( 'Subject :', 'dokan' ); ?></label>
-                <input required class="dokan-form-control" type="text" name='dokan-support-subject' id='dokan-support-subject'/>
+                <input class="dokan-form-control" type="text" name='dokan-support-subject' id='dokan-support-subject'/>
             </div>
             <div class="dokan-form-group">
                 <?php if ( ! empty( $customer_orders ) ) { ?>
@@ -970,7 +970,7 @@ class Module {
                 <thead>
                     <tr>
                         
-                        <th><?php esc_html_e( 'Title', 'dokan' ); ?></th>
+                        
                         <th><?php esc_html_e( 'Consulta', 'dokan' ); ?></th>
                         <th><?php esc_html_e( 'Status', 'dokan' ); ?></th>
                         <th><?php esc_html_e( 'Date', 'dokan' ); ?></th>
@@ -984,13 +984,7 @@ class Module {
                         ?>
                         <tr>
                             
-                            <td class="column-primary">
-                                
-                                    <?php echo $topic->post_title; ?>
-                                
-
-                                
-                            </td>
+                            
                               <td class="column-primary">
                                 
                                     <?php echo $topic->post_content; ?>
@@ -1028,7 +1022,7 @@ class Module {
                           
                         </tr>
                         <tr>
-                         <td colspan="4"> <?php
+                         <td colspan="3"> <?php
                  
                     $comments = get_comments(
                         [
