@@ -57,6 +57,7 @@ class Module {
         add_action( 'dokan_after_store_tabs', [ $this, 'generate_support_button' ] );
         add_action( 'woocommerce_after_add_to_cart_button', [ $this, 'generate_support_button_product_page' ] );
         add_action( 'dokan_product_seller_tab_end', [ $this, 'generate_support_button_product_page_inner_tab' ], 10, 2 );
+		add_action( 'dokan_product_seller_tab_end', [ $this, 'generate_opiniones_listado' ], 10, 2 );
         add_action( 'dokan_after_load_script', [ $this, 'include_scripts' ] );
         add_action( 'dokan_enqueue_scripts', [ $this, 'include_scripts' ] );
 
@@ -379,10 +380,21 @@ class Module {
             return;
         }
         ?>
-            <button data-store_id="<?php echo esc_attr( $store_id ); ?>" class="dokan-store-support-btn-product dokan-store-support-btn button alt <?php echo esc_attr( $button['class'] ); ?>"><?php echo esc_html( $button['text'] ); ?></button>
+            <button data-store_id="<?php echo esc_attr( $store_id ); ?>" data-product_id="<?php echo esc_attr( $product_id ); ?>" class="dokan-store-support-btn-product dokan-store-support-btn button alt <?php echo esc_attr( $button['class'] ); ?>"><?php echo esc_html( $button['text'] ); ?></button>
         <?php
     }
-
+ /**
+     * Prints listado de opiniones
+     *
+     * @since 3.2.0
+     *
+     * @param obj $author
+     * @param obj $store
+     */
+   public function generate_opiniones_listado( $author, $store ) {
+   $this->print_support_topics_by_seller(dokan_get_current_user_id());
+   }
+   
     /**
      * Prints Get support button on product page inner tab
      *
@@ -542,6 +554,7 @@ class Module {
         global $user_login;
 
         $seller_id = $seller_id === '' ? ( ( isset( $_POST['store_id'] ) ) ? absint( wp_unslash( $_POST['store_id'] ) ) : 0 ) : absint( $seller_id );
+		 $product_id = $_POST['product_id'];
         $order_id  = isset( $_POST['order_id'] ) ? absint( wp_unslash( $_POST['order_id'] ) ) : 0;
 
         $customer_orders = apply_filters( 'dokan_store_support_order_id_select_in_form', dokan_get_customer_orders_by_seller( dokan_get_current_user_id(), $seller_id ) );
@@ -573,6 +586,7 @@ class Module {
                 <textarea required class="dokan-form-control" name='dokan-support-msg' rows="5" id='dokan-support-msg'></textarea>
             </div>
             <input type="hidden" name='store_id' value="<?php echo $seller_id; ?>" />
+			 <input type="hidden" name='product_id' value="<?php echo $product_id; ?>" />
 
             <?php wp_nonce_field( 'dokan-support-form-action', 'dokan-support-form-nonce' ); ?>
             <div class="dokan-form-group">
@@ -652,9 +666,11 @@ class Module {
         if ( $post_id ) {
             $store_id = ( ! empty( $postdata['store_id'] ) ) ? absint( $postdata['store_id'] ) : null;
             $order_id = ( ! empty( $postdata['order_id'] ) ) ? absint( $postdata['order_id'] ) : null;
-
+		$product_id = ( ! empty( $postdata['product_id'] ) ) ? absint( $postdata['product_id'] ) : null;
+		
             update_post_meta( $post_id, 'store_id', $store_id );
             update_post_meta( $post_id, 'order_id', $order_id );
+			update_post_meta( $post_id, 'product_id', $product_id );
 
             $mailer = WC()->mailer();
 
@@ -1074,6 +1090,8 @@ class Module {
                     <h1><?php the_title(); ?></h1>
                     <?php
                     $order_id = get_post_meta( get_the_ID(), 'order_id', true );
+                    $product_id = get_post_meta( get_the_ID(), 'product_id', true );
+					
 
                     if ( $order_id && ( $order = wc_get_order( $order_id ) ) ) {
                         $ticket_ref_url = $order->get_view_order_url();
@@ -1088,9 +1106,22 @@ class Module {
                                 <?php echo '<a href="' . esc_url( $ticket_ref_url ) . '"><strong>' . sprintf( __( 'Referenced Order #%s', 'dokan' ), esc_attr( $order_id ) ) . '</strong></a>'; ?>
                             </h3>
                         </span>
+						
                         <?php
                     }
+					if ( $product_id && ( $product = wc_get_product( $product_id ) ) ) {
+                         $permalink = $product->get_permalink();
+						 $titleproduct = $product->get_title();
+
                     ?>
+						<span class="order-reference" >
+                            <h3>
+                                <?php echo '<a href="' . esc_url( $permalink ) . '"><strong>' . sprintf( __( 'Producto #%s', 'dokan' ), esc_attr( $titleproduct ) ) . '</strong></a>'; ?>
+                            </h3>
+                        </span>
+						 <?php
+                    }
+					?>
                 </div>
                 <div class="dokan-suppport-topic-body dokan-clearfix">
                     <div class="dokan-support-user-image dokan-w3">
