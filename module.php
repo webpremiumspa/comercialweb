@@ -564,7 +564,7 @@ class Module {
         <div class="dokan-support-intro-user"><strong><?php printf( __( 'Hi, %s', 'dokan' ), $user_login ); ?></strong></div>
         <div class="dokan-support-intro-text"><?php esc_html_e( 'Create a new support topic', 'dokan' ); ?></div>
         <form class="dokan-form-container" id="dokan-support-form">
-            <div class="dokan-form-group">
+            <div class="dokan-form-group" style="display:none">
                 <label class="dokan-form-label" for="dokan-support-subject"><?php esc_html_e( 'Subject :', 'dokan' ); ?></label>
                 <input class="dokan-form-control" type="text" name='dokan-support-subject' id='dokan-support-subject'/>
             </div>
@@ -1011,7 +1011,7 @@ class Module {
                             'per_page'          => 0, //Allow comment pagination
                             'reverse_top_level' => true, //Show the latest comments at the top of the list
                             'format'            => 'html5',
-                            'callback'          => [ $this, 'support_comment_format_opiniones_producto' ],
+                            'callback'          => [ $this, 'support_comment_format_consultas_producto' ],
                         ],
                         $comments
                     );
@@ -1624,7 +1624,7 @@ class Module {
      *
      * @since 1.0
      */
-    public function support_comment_format_opiniones_producto( $comment, $args, $depth ) {
+    public function support_comment_format_consultas_producto( $comment, $args, $depth ) {
         $GLOBALS['comment'] = $comment;
         ?>
 
