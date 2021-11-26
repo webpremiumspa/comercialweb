@@ -392,7 +392,7 @@ class Module {
      * @param obj $store
      */
    public function generate_opiniones_listado( $author, $store ) {
-   $this->print_support_topics_by_seller(dokan_get_current_user_id());
+   $this->print_support_topics_by_product(get_the_ID());
    }
    
     /**
@@ -905,7 +905,149 @@ class Module {
 
         return $query;
     }
+    /**
+     * Query for support topics using product_id
+     *
+     * @since 1.0
+     *
+     * @param int $product_id
+     *
+     * @return WP_Query $query
+     */
+    public function get_support_topics_by_product( $product_id ) {
+        $pagenum  = isset( $_GET['pagenum'] ) ? absint( wp_unslash( $_GET['pagenum'] ) ) : 1;
+        $offset   = ( $pagenum - 1 ) * $this->per_page;
+        $paged    = ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1;
 
+        // WP_Query arguments
+        $args = [
+            'post_type'      => 'dokan_store_support',
+            'posts_per_page' => $this->per_page,
+            'offset'         => $offset,
+            'paged'          => $paged,
+            'meta_query'     => [
+                [
+                    'key'     => 'product_id',
+                    'value'   => $product_id,
+                    'compare' => '=',
+                    'type'    => 'NUMERIC',
+                ],
+            ],
+        ];
+
+        $args = apply_filters( 'dokan_get_topic_by_seller_qry_args', $args );
+
+        $args['post_status'] = 'open';
+
+        if ( isset( $_GET['ticket_status'] ) ) {
+            $args['post_status'] = wp_unslash( $_GET['ticket_status'] );
+        }
+
+        // The Query
+        $query = new WP_Query( $args );
+
+        $this->total_query_result = $query->found_posts;
+
+        return $query;
+    }
+/**
+     * Print html of all topics for given product
+     *
+     * @since 1.0
+     *
+     * @param int $product_id
+     *
+     * @return void
+     */
+    public function print_support_topics_by_product( $product_id ) {
+        $query = $this->get_support_topics_by_product( $product_id );
+        ?>
+        <div class="dokan-support-topics-list">
+            <?php
+            if ( $query->posts ) {
+                ?>
+            <table class="dokan-table dokan-support-table">
+                <thead>
+                    <tr>
+                        <th><?php esc_html_e( 'Topic', 'dokan' ); ?></th>
+                        <th><?php esc_html_e( 'Title', 'dokan' ); ?></th>
+                        <th><?php esc_html_e( 'Customer', 'dokan' ); ?></th>
+                        <th><?php esc_html_e( 'Status', 'dokan' ); ?></th>
+                        <th><?php esc_html_e( 'Date', 'dokan' ); ?></th>
+                        <th><?php esc_html_e( 'Action', 'dokan' ); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    foreach ( $query->posts as $topic ) {
+                        $topic_url = trailingslashit( dokan_get_navigation_url( 'support' ) . '' . $topic->ID );
+                        ?>
+                        <tr>
+                            <td>
+                                <a href="<?php echo $topic_url; ?>"
+                                    <strong>
+                                        <?php echo '#' . $topic->ID; ?>
+                                    </strong>
+                                </a>
+                            </td>
+                            <td class="column-primary">
+                                <a href="<?php echo $topic_url; ?>">
+                                    <?php echo $topic->post_title; ?>
+                                </a>
+
+                                <button type="button" class="toggle-row"></button>
+                            </td>
+                            <td data-title="<?php esc_html_e( 'Customer', 'dokan' ); ?>">
+                                <div class="dokan-support-customer-name">
+                                    <?php echo get_avatar( $topic->post_author, 50 ); ?>
+                                    <strong><?php echo get_user_meta( $topic->post_author, 'nickname', true ); ?></strong>
+                                </div>
+                            </td>
+                            <?php
+                            switch ( $topic->post_status ) {
+                                case 'open':
+                                    $c_status     = __( 'closed', 'dokan' );
+                                    $btn_icon     = 'fa-close';
+                                    $topic_status = 'dokan-label-success';
+                                    $btn_title    = __( 'close topic', 'dokan' );
+                                    break;
+
+                                case 'closed':
+                                    $c_status     = __( 'open', 'dokan' );
+                                    $btn_icon     = 'fa-file-o';
+                                    $topic_status = 'dokan-label-danger';
+                                    $btn_title    = __( 're-open topic', 'dokan' );
+                                    break;
+
+                                default:
+                                    $c_status     = __( 'closed', 'dokan' );
+                                    $btn_icon     = 'fa-close';
+                                    $topic_status = 'dokan-label-success';
+                                    $btn_title    = __( 'close topic', 'dokan' );
+                                    break;
+                            }
+                            ?>
+                            <td data-title="<?php esc_attr_e( 'Status', 'dokan' ); ?>"><span class="dokan-label <?php echo $topic_status; ?>"><?php echo 'open' === $topic->post_status ? __( 'Open', 'dokan' ) : __( 'Close', 'dokan' ); ?></span></td>
+                            <td class="dokan-order-date" data-title="<?php esc_attr_e( 'Date', 'dokan' ); ?>"><span><?php echo esc_html( dokan_format_datetime( dokan_get_timestamp( $topic->post_date_gmt, true ) ) ); ?></span></td>
+                            <td data-title="<?php esc_attr_e( 'Action', 'dokan' ); ?>">
+                                <a class="dokan-btn dokan-btn-default dokan-btn-sm tips dokan-support-status-change" onclick="dokan_show_delete_prompt( event, dokan.delete_confirm );" href="<?php echo wp_nonce_url( add_query_arg( [ 'action' => 'dokan-support-topic-status', 'topic_id' => $topic->ID, 'ticket_status' => $c_status ], dokan_get_navigation_url( 'support' ) ), 'dokan-change-topic-status' ); ?>" title="" data-changing_post_id="<?php echo $topic->ID; ?>" data-original-title="<?php echo $btn_title; ?>"><i data-url="<?php echo wp_nonce_url( add_query_arg( [ 'action' => 'dokan-support-topic-status', 'topic_id' => $topic->ID, 'ticket_status' => $c_status ], dokan_get_navigation_url( 'support' ) ), 'dokan-change-topic-status' ); ?>" class="fa <?php echo $btn_icon; ?>">&nbsp;</i></a>
+                            </td>
+                        </tr>
+                        <?php
+                    }
+                    ?>
+                <?php } else { ?>
+                    <div class="dokan-error">
+                        <?php esc_html_e( 'No tickets found!', 'dokan' ); ?>
+                    </div>
+                <?php } ?>
+                </tbody>
+            </table>
+        </div>
+        <?php
+        $this->topics_pagination( 'support' );
+        wp_reset_postdata();
+    }
     /**
      * Print html of all topics for given seller
      *
