@@ -1027,6 +1027,31 @@ class Module {
                             <td class="dokan-order-date" data-title="<?php esc_attr_e( 'Date', 'dokan' ); ?>"><span><?php echo esc_html( dokan_format_datetime( dokan_get_timestamp( $topic->post_date_gmt, true ) ) ); ?></span></td>
                           
                         </tr>
+                        <tr>
+                         <td> <?php
+                 
+                    $comments = get_comments(
+                        [
+                            'post_id' => $topic->ID,
+                            'status'  => 'approve', //Change this to the type of comments to be displayed
+                        ]
+                    );
+
+                    // Display the list of comments
+                    wp_list_comments(
+                        [
+                            'max_depth'         => 0,
+                            'page'              => 1,
+                            'per_page'          => 100, //Allow comment pagination
+                            'reverse_top_level' => true, //Show the latest comments at the top of the list
+                            'format'            => 'html5',
+                            'callback'          => [ $this, 'support_comment_format' ],
+                        ],
+                        $comments
+                    );
+                    ?>
+                    </td>
+                        </tr>
                         <?php
                     }
                     ?>
