@@ -1028,7 +1028,7 @@ class Module {
                           
                         </tr>
                         <tr>
-                         <td> <?php
+                         <td colspan="4"> <?php
                  
                     $comments = get_comments(
                         [
@@ -1045,7 +1045,7 @@ class Module {
                             'per_page'          => 100, //Allow comment pagination
                             'reverse_top_level' => true, //Show the latest comments at the top of the list
                             'format'            => 'html5',
-                            'callback'          => [ $this, 'support_comment_format' ],
+                            'callback'          => [ $this, 'support_comment_format_opiniones_producto' ],
                         ],
                         $comments
                     );
@@ -1646,6 +1646,26 @@ class Module {
                         </p>
                     </div>
                 </div>
+                <div class="dokan-support-reply dokan-w8">
+                    <p><?php comment_text(); ?></p>
+                </div>
+                <div class="dokan-clearfix"></div>
+            </div>
+        <?php
+    }
+    /**
+     * Print comments into formatted html, callback for wp_comment_list function
+     *
+     * @since 1.0
+     */
+    public function support_comment_format_opiniones_producto( $comment, $args, $depth ) {
+        $GLOBALS['comment'] = $comment;
+        ?>
+
+        <li <?php comment_class(); ?> id="li-comment-<?php comment_ID(); ?>">
+
+            <div class="dokan-suppport-topic-body">
+               <svg class="ui-pdp-icon ui-pdp-qadb__questions-list__question__answer-container__icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12"><path fill="#000" fill-opacity=".25" fill-rule="evenodd" d="M0 0h1v11h11v1H0z"></path></svg>
                 <div class="dokan-support-reply dokan-w8">
                     <p><?php comment_text(); ?></p>
                 </div>
